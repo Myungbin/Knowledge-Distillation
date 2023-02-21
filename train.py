@@ -1,3 +1,6 @@
+import os
+import logging
+
 import torch
 import torch.nn as nn
 import numpy as np
@@ -5,6 +8,9 @@ from tqdm import tqdm
 import torch.nn.functional as F
 
 import config as cfg
+import utils
+
+utils.set_logger(os.path.join('log', 'train.log'))
 
 
 def train(model, train_loader, val_loader, criterion, optimizer, scheduler, device):
@@ -59,6 +65,9 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, devi
         print(
             f"Epoch : {epoch + 1} - loss : {train_loss:.4f} - acc: {train_accuracy:.4f} - val_loss : {validation_loss:.4f} - val_acc: {validation_accuracy:.4f}\n"
         )
+
+        logging.info(f'- Train acc: {str(train_accuracy)}, - Train loss: {str(train_loss)}')
+        logging.info(f'- Validation acc: {str(validation_accuracy)}, - Validation loss: {str(validation_loss)}')
 
         if scheduler is not None:
             scheduler.step()
@@ -125,7 +134,8 @@ def train_distillation(student_model, teacher_model, data_loader, criterion_kd, 
         print(
             f"Epoch : {epoch + 1} - loss : {train_loss:.4f} - acc: {train_accuracy:.4f} - val_loss : {validation_loss:.4f} - val_acc: {validation_accuracy:.4f}\n"
         )
-
+        logging.info(f'- Train acc: {str(train_accuracy)}, - Train loss: {str(train_loss)}')
+        logging.info(f'- Validation acc: {str(validation_accuracy)}, - Validation loss: {str(validation_loss)}')
 
 def inference(model, test_loader, device):
     model.to(device)
